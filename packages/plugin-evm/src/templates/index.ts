@@ -72,3 +72,19 @@ Respond with a JSON markdown block containing only the extracted values. Use nul
 }
 \`\`\`
 `;
+
+export const getAddressTemplate = `Given the recent messages below:
+
+{{recentMessages}}
+
+Extract the following information about the requested address:
+- Wallet address
+
+Respond with a JSON markdown block containing only the extracted values:
+
+\`\`\`json
+{
+    "address": string
+}
+\`\`\`
+`;
