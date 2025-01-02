@@ -84,6 +84,10 @@ export interface BridgeParams {
     toAddress?: Address;
 }
 
+export interface AddressParams {
+    address: Address;
+}
+
 // Plugin configuration
 export interface EvmPluginConfig {
     rpcUrl?: {
