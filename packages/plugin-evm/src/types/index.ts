@@ -63,10 +63,8 @@ export interface ChainConfig {
 
 // Action parameters
 export interface TransferParams {
-    fromChain: SupportedChain;
     toAddress: Address;
     amount: string;
-    data?: `0x${string}`;
 }
 
 export interface SwapParams {
@@ -84,6 +82,10 @@ export interface BridgeParams {
     toToken: Address;
     amount: string;
     toAddress?: Address;
+}
+
+export interface AddressParams {
+    address: Address;
 }
 
 // Plugin configuration
