@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-json-config
+  name: character-config
 data:
   {{- range $path, $_ := .Files.Glob "characters/*.json" }}
   {{ $path | base }}: |
