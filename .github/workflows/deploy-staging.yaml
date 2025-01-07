@@ -70,7 +70,7 @@ jobs:
       REGISTRY_ENDPOINT: ${{ secrets.REGISTRY_ENDPOINT }}
       REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-      KUBECONFIG: ${{ secrets.KUBECONFIG }}
+      KUBECONFIG_FILE: ${{ secrets.KUBECONFIG }}
       HELM_RELEASE_NAMESPACE: ${{ vars.HELM_RELEASE_NAMESPACE }}
       HELM_RELEASE_NAME: ${{ vars.HELM_RELEASE_NAME }}
       HELM_CHART_REPOSITORY: ${{ secrets.HELM_CHART_REPOSITORY }}
@@ -91,7 +91,7 @@ jobs:
         - name: Configure Kubernetes config file
           run: |
               mkdir -p $HOME/.kube/
-              echo "${{ env.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+              echo "${{ env.KUBECONFIG_FILE }}" | base64 -d > $HOME/.kube/config
 
         - name: Upgrade installed Helm chart release
           run: |
