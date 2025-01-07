@@ -54,3 +54,6 @@ coverage
 .eslintcache
 
 agent/content
+
+helm/*
+!helm/values/
