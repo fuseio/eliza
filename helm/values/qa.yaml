@@ -1,0 +1,34 @@
+---
+agent:
+  image:
+    repository: "82036t6s.c1.va1.container-registry.ovh.us/fuseio/eliza"
+    pullPolicy: IfNotPresent
+    tag: 'latest'
+  replicas: 1
+  port: 3000
+  volumes:
+    tappdSock:
+      path: "/var/run/tappd.sock"
+    tweetCache:
+      path: "/app/packages/client-twitter/src/tweetcache"
+    sqliteDb:
+      path: "/app/db.sqlite"
+      size: 5Gi
+  characterConfigMap: "character-config"
+  characterFile: "fusenetwork.character.json"
+  envSecret: agent-env-secret
+  dockerSecret: regcred
+
+client:
+  image:
+    repository: "82036t6s.c1.va1.container-registry.ovh.us/fuseio/eliza"
+    pullPolicy: IfNotPresent
+    tag: 'latest'
+  replicas: 1
+  port: 5173
+  dockerSecret: regcred
+
+ingress:
+  enabled: true
+  host: "ai.bot.qa.fuse.io"
+  tlsSecret: eliza-tls-certificate
