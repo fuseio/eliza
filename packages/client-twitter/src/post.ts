@@ -617,6 +617,7 @@ export class TwitterPostClient {
 
             const homeTimeline = await this.client.fetchTimelineForActions(15);
             const results = [];
+            let isRetweeted = false;
 
             for (const tweet of homeTimeline) {
                 try {
@@ -697,6 +698,11 @@ export class TwitterPostClient {
 
                     if (actionResponse.retweet) {
                         try {
+                            if(isRetweeted) {
+                                elizaLogger.info("Already retweeted once in this homeTimeline cycle");
+                                continue;
+                            }
+
                             if (this.isDryRun) {
                                 elizaLogger.info(
                                     `Dry run: would have retweeted tweet ${tweet.id}`
@@ -709,6 +715,8 @@ export class TwitterPostClient {
                                 executedActions.push("retweet");
                                 elizaLogger.log(`Retweeted tweet ${tweet.id}`);
                             }
+
+                            isRetweeted = true;
                         } catch (error) {
                             elizaLogger.error(
                                 `Error retweeting tweet ${tweet.id}:`,
