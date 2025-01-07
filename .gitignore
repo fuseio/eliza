@@ -40,6 +40,7 @@ timeline_cache.json
 *.sqlite
 
 characters/
+!helm/characters/
 
 packages/core/src/providers/cache
 packages/core/src/providers/cache/*
@@ -54,6 +55,3 @@ coverage
 .eslintcache
 
 agent/content
-
-helm/*
-!helm/values/

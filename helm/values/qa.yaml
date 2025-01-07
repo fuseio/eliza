@@ -15,7 +15,7 @@ agent:
       path: "/app/db.sqlite"
       size: 5Gi
   characterConfigMap: "character-config"
-  characterFile: "fusenetwork.character.json"
+  characterFile: "edison.character.json"
   envSecret: agent-env-secret
   dockerSecret: regcred
 
