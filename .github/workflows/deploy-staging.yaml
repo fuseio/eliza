@@ -97,6 +97,7 @@ jobs:
           run: |
               helm upgrade \
                 --install \
+                --history-max 3 \
                 --debug \
                 --atomic \
                 --wait \
@@ -104,6 +105,4 @@ jobs:
                 --set agent.image.tag=${{ needs.build-and-push.outputs.short_sha }} \
                 --set client.image.tag=${{ needs.build-and-push.outputs.short_sha }} \
                 -n ${{ env.HELM_RELEASE_NAMESPACE }} \
-                ${{ env.HELM_RELEASE_NAME }} \
-                ${{ env.HELM_CHART_REPOSITORY }} \
-                --version ${{ env.HELM_CHART_VERSION }}
+                ${{ env.HELM_RELEASE_NAME }} helm/

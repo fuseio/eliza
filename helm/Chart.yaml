@@ -1,0 +1,5 @@
+---
+apiVersion: v2
+name: fuse-eliza
+description: Helm chart for Eliza AI Agent and Client services with ingress
+version: 0.1.2

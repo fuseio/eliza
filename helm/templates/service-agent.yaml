@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eliza-agent-svc
+spec:
+  selector:
+    app: agent
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: {{ .Values.agent.port }}
