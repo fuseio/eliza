@@ -40,6 +40,7 @@
       "@elizaos/plugin-coinbase": "workspace:*",
       "@elizaos/plugin-conflux": "workspace:*",
       "@elizaos/plugin-cronoszkevm": "workspace:*",
+      "@elizaos/plugin-edison": "workspace:*",
       "@elizaos/plugin-evm": "workspace:*",
       "@elizaos/plugin-flow": "workspace:*",
       "@elizaos/plugin-fuel": "workspace:*",
