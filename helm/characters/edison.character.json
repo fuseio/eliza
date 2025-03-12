@@ -1,8 +1,6 @@
 {
     "name": "Edison",
-    "clients": [
-        "twitter"
-    ],
+    "clients": [],
     "modelProvider": "openrouter",
     "settings": {
         "chains": {
