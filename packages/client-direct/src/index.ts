@@ -297,7 +297,8 @@ export class DirectClient {
                     (a) => a.name === response.action
                 );
                 const shouldSuppressInitialMessage =
-                    action?.suppressInitialMessage;
+                    action?.suppressInitialMessage ||
+                    (message && message.action === response.action);
 
                 if (!shouldSuppressInitialMessage) {
                     if (message) {
