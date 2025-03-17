@@ -49,8 +49,6 @@ jobs:
           tags: |
             ${{ env.PRIVATE_REGISTRY_ENDPOINT }}/${{ env.PRIVATE_REGISTRY_REPOSITORY }}:latest
             ${{ env.PRIVATE_REGISTRY_ENDPOINT }}/${{ env.PRIVATE_REGISTRY_REPOSITORY }}:${{ steps.sha.outputs.short_sha }}
-          cache-from: type=gha,scope=${{ github.ref }}-eliza
-          cache-to: type=gha,mode=max,scope=${{ github.ref }}-eliza
 
   deploy:
     name: Deploy
