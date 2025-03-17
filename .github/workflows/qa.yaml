@@ -65,8 +65,8 @@ jobs:
       HELM_CHART_REGISTRY_REPOSITORY: ${{ secrets.HELM_CHART_REGISTRY_REPOSITORY }}
       HELM_CHART_REGISTRY_USERNAME: ${{ secrets.HELM_CHART_REGISTRY_USERNAME }}
       HELM_CHART_REGISTRY_PASSWORD: ${{ secrets.HELM_CHART_REGISTRY_PASSWORD }}
-      HELM_EXTERNAL_SECRETS_STORE_NAME: ${{ vars.HELM_EXTERNAL_SECRETS_STORE_NAME }}
-      HELM_EXTERNAL_SECRETS_REMOTE_REF_KEY: ${{ vars.HELM_EXTERNAL_SECRETS_REMOTE_REF_KEY }}
+      HELM_EXTERNAL_SECRETS_STORE_NAME: ${{ secrets.HELM_EXTERNAL_SECRETS_STORE_NAME }}
+      HELM_EXTERNAL_SECRETS_REMOTE_REF_KEY: ${{ secrets.HELM_EXTERNAL_SECRETS_REMOTE_REF_KEY }}
       HELM_CHART_VERSION: ${{ vars.HELM_CHART_VERSION }}
       HELM_RELEASE_NAME: ${{ vars.HELM_RELEASE_NAME }}
       HELM_RELEASE_NAMESPACE: ${{ vars.HELM_RELEASE_NAMESPACE }}
@@ -101,7 +101,7 @@ jobs:
             --set agent-api.image.tag=${{ needs.build-and-push.outputs.short_sha }} \
             --set agent-api.externalSecret.secretStoreName=${{ env.HELM_EXTERNAL_SECRETS_STORE_NAME }} \
             --set agent-api.externalSecret.remoteRefKey=${{ env.HELM_EXTERNAL_SECRETS_REMOTE_REF_KEY }} \
-            --set agent-ui.image.repository=${{ env.PRIVATE_REGISTRY_ENDPOINT }}/${{ env.PRIVATE_REGISTRY_REPOSITORY }}
+            --set agent-ui.image.repository=${{ env.PRIVATE_REGISTRY_ENDPOINT }}/${{ env.PRIVATE_REGISTRY_REPOSITORY }} \
             --set agent-ui.image.tag=${{ needs.build-and-push.outputs.short_sha }} \
             -n ${{ env.HELM_RELEASE_NAMESPACE }} \
             ${{ env.HELM_RELEASE_NAME }} \
