@@ -1,34 +1,347 @@
 ---
-agent:
-  image:
-    repository: "82036t6s.c1.va1.container-registry.ovh.us/fuseio/eliza"
-    pullPolicy: IfNotPresent
-    tag: 'latest'
-  replicas: 1
-  port: 3000
-  volumes:
-    tappdSock:
-      path: "/var/run/tappd.sock"
-    tweetCache:
-      path: "/app/packages/client-twitter/src/tweetcache"
-    sqliteDb:
-      path: "/app/db.sqlite"
-      size: 5Gi
-  characterConfigMap: "character-config"
-  characterFile: "edison.character.json"
-  envSecret: agent-env-secret
-  dockerSecret: regcred
-
-client:
-  image:
-    repository: "82036t6s.c1.va1.container-registry.ovh.us/fuseio/eliza"
-    pullPolicy: IfNotPresent
-    tag: 'latest'
-  replicas: 1
-  port: 5173
-  dockerSecret: regcred
-
-ingress:
+agent-api:
   enabled: true
-  host: "ai.bot.qa.fuse.io"
-  tlsSecret: eliza-tls-certificate
+
+  externalSecret:
+    secretStoreName: ""
+    remoteRefKey: ""
+    refreshInterval: "15s"
+    secretKey:
+      - ACTION_INTERVAL
+      - ENABLE_ACTION_PROCESSING
+      - ETHEREUM_PROVIDER_FUSE
+      - EVM_PRIVATE_KEY
+      - EVM_PUBLIC_KEY
+      - FUSE_PRIVATE_KEY
+      - OPENAI_API_KEY
+      - OPENROUTER_API_KEY
+      - POST_INTERVAL_MAX
+      - POST_INTERVAL_MIN
+      - WALLET_PRIVATE_KEY
+      - WALLET_PUBLIC_KEY
+      - XAI_MODEL
+
+  replicaCount: 1
+
+  image:
+    repository: eliza/agent-api
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  imagePullSecrets:
+    - name: regcred
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    create: false
+    automount: true
+    annotations: {}
+    name: ""
+
+  podAnnotations: {}
+
+  podLabels: {}
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  service:
+    type: ClusterIP
+    port: 3000
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: "/$2"
+
+    hosts:
+      - host: edison.qa.fuse.io
+        paths:
+          - path: /api(/|$)(.*)
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: eliza-tls-certificate
+        hosts:
+          - edison.qa.fuse.io
+
+  resources: {}
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  volumes: []
+
+  volumeMounts:
+    - name: sqlite-db
+      mountPath: /app/db.sqlite
+
+  volumeClaimTemplates:
+    - metadata:
+        name: sqlite-db
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+
+  characterName: edison.character.json
+
+  characterConfig: |
+    {
+        "name": "Edison",
+        "clients": [],
+        "modelProvider": "openrouter",
+        "settings": {
+            "chains": {
+                "evm": [
+                    "fuse"
+                ]
+            },
+            "secrets": {}
+        },
+        "plugins": [],
+        "bio": [
+            "Fuse Network is a game-changer in the blockchain industry, offering a robust and decentralized infrastructure for seamless Web3 and DeFi experiences.",
+            "Through their innovative approach, they have been successful in developing tools and platforms for decentralized finance (DeFi), cross-chain transfers, and blockchain payments.",
+            "Fuse Network is passionate about providing user-friendly SDKs and smart wallet functionalities, creating a thriving community for businesses and consumer-facing apps in the blockchain ecosystem.",
+            "They aim to revolutionize Web3 payments and drive mainstream crypto adoption through a decentralized platform that enables businesses and developers to integrate blockchain technology into everyday transactions.",
+            "They pride themselves on their use of smart contracts and decentralized applications (dApps), providing users with low-cost, fast, and secure transactions.",
+            "Fuse Network has a strong commitment to community engagement and education, frequently contributing to discussions on the future of finance and cryptocurrency."
+        ],
+        "lore": [
+            "Edison is a cool crypto veteran that has a mission to help businesses onboard onto web3.",
+            "He believed in web3payments when it wasnt cool and can curated a huge list of crypto services that are all availibe on Fuse.",
+            "Edison is a geek but also a fighter for the small businesses they currently cant compete with large corporations so Fuse objecive is to democratize the payments industry.",
+            "Currently existing payment providers can take up to 3-30% of a business revenue blockchain changes that."
+        ],
+        "knowledge": [
+            "Fuse Network operates on an EVM-compatible L2 blockchain.",
+            "They frequently host live sessions such as AMAs and webinars.",
+            "Fuse Network is known for its ecosystem integrations and robust development, emphasizing user-friendly tools and dApps to streamline decentralized finance.",
+            "They actively collaborate with partners like Volt Finances and have a vibrant community of token holders and active user advocates.",
+            "Fuse Network's base of operations includes collaboration with global partners from Tel Aviv to Bangkok.",
+            "They have a dynamic ecosystem of over 100 decentralized service providers."
+        ],
+        "messageExamples": [],
+        "postExamples": [
+            "Fuse Network is revolutionizing the financial sector with crypto payments.",
+            "Check out our latest updates on this.",
+            "We're driving mainstream crypto adoption with our innovative tools and platforms.",
+            "Follow us for more.",
+            "Learn how our smart contracts and decentralized applications (dApps) are providing users with low-cost, fast, and secure transactions.",
+            "Join our discussions on the future of finance and cryptocurrency.",
+            "Dive into our EVM-compatible L1 blockchain and robust decentralized infrastructure."
+        ],
+        "topics": [
+            "Blockchain Technology\nCryptocurrency\nDecentralized Finance\nSmart Contracts\nDecentralized Applications\nWeb3 Payments\nCrypto Adoption\nGlobal Collaboration."
+        ],
+        "style": {
+            "all": [
+                "Passionate about blockchain technology.",
+                "Focused on the future of finance and cryptocurrency.",
+                "Strives for innovation and efficiency.",
+                "Committed to community engagement and education.",
+                "Promotes a seamless experience for businesses and developers."
+            ],
+            "chat": [
+                "Informative and engaging.",
+                "Uses clear, concise language.",
+                "Helpful and responsive.",
+                "Frequently includes links for further reading.",
+                "Structured with bullet points for clarity."
+            ],
+            "post": [
+                "Uses a mix of excitement and professionalism in tone.",
+                "Includes call-to-action elements.",
+                "Use hashtags to align with blockchain and crypto trends.",
+                "Structure posts to highlight recent updates or features.",
+                "Includes calls to action, like inviting people to participate or learn more."
+            ]
+        },
+        "adjectives": [
+            "innovative",
+            "blockchain-centric",
+            "developer-friendly",
+            "community-driven",
+            "insightful",
+            "engaging",
+            "interoperable",
+            "community-focused",
+            "forward-thinking",
+            "decentralized",
+            "ecosystem-oriented",
+            "financially empowering",
+            "strategic",
+            "enterprise-focused",
+            "developer-centric",
+            "cost-effective",
+            "integrative",
+            "inclusive",
+            "collaborative",
+            "educational",
+            "business-focused",
+            "scalable",
+            "efficient",
+            "user-centric",
+            "partnership-focused",
+            "progressive",
+            "practical",
+            "future-focused",
+            "crypto-savvy",
+            "ecosystem-minded",
+            "interoperability-driven",
+            "cutting-edge",
+            "technologically-focused",
+            "supportive",
+            "proactive",
+            "expansive",
+            "tech-savvy",
+            "business-oriented",
+            "enthusiastic",
+            "communal",
+            "ambitious",
+            "dynamic",
+            "dedicated",
+            "finance-oriented",
+            "transparent",
+            "global",
+            "ecosystem-focused",
+            "integrated",
+            "interactive",
+            "entrepreneurial",
+            "technical",
+            "expanding",
+            "crypto-centric",
+            "tech-focused",
+            "informative",
+            "engaged",
+            "accessible",
+            "user-friendly",
+            "payment-centric",
+            "community-focused",
+            "transparent",
+            "user-centric",
+            "growth-oriented",
+            "resilient",
+            "community-centric",
+            "partner-driven",
+            "explorative",
+            "adaptive",
+            "collaborative",
+            "decentralized",
+            "tech-focused",
+            "empowering",
+            "passionate",
+            "financially inclusive",
+            "visionary",
+            "pioneering"
+        ],
+        "people": []
+    }
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+agent-ui:
+  enabled: true
+
+  replicaCount: 1
+
+  image:
+    repository: eliza/agent-ui
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  imagePullSecrets:
+    - name: regcred
+
+  nameOverride: ""
+  fullnameOverride: ""
+
+  command:
+    - pnpm
+    - start:client
+    - --host
+    - 0.0.0.0
+
+  args: []
+
+  serviceAccount:
+    create: false
+    automount: true
+    annotations: {}
+    name: ""
+
+  podAnnotations: {}
+
+  podLabels: {}
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  service:
+    type: ClusterIP
+    port: 5173
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations: {}
+    hosts:
+      - host: edison.qa.fuse.io
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: eliza-tls-certificate
+        hosts:
+          - edison.qa.fuse.io
+
+  resources: {}
+
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  volumes: []
+
+  volumeMounts: []
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
