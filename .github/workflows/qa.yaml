@@ -105,5 +105,5 @@ jobs:
             --set agent-ui.image.tag=${{ needs.build-and-push.outputs.short_sha }} \
             -n ${{ env.HELM_RELEASE_NAMESPACE }} \
             ${{ env.HELM_RELEASE_NAME }} \
-            ${{ env.HELM_CHART_REGISTRY_ENDPOINT }}/${{ env.HELM_CHART_REGISTRY_REPOSITORY }} \
+            oci://${{ env.HELM_CHART_REGISTRY_ENDPOINT }}/${{ env.HELM_CHART_REGISTRY_REPOSITORY }} \
             --version ${{ env.HELM_CHART_VERSION }}
