@@ -97,7 +97,7 @@ jobs:
             --atomic \
             --wait \
             --values helm/values/qa.yaml \
-            --set agent-api.image.repository=${{ env.PRIVATE_REGISTRY_ENDPOINT }}/${{ env.PRIVATE_REGISTRY_REPOSITORY }}
+            --set agent-api.image.repository=${{ env.PRIVATE_REGISTRY_ENDPOINT }}/${{ env.PRIVATE_REGISTRY_REPOSITORY }} \
             --set agent-api.image.tag=${{ needs.build-and-push.outputs.short_sha }} \
             --set agent-api.externalSecret.secretStoreName=${{ env.HELM_EXTERNAL_SECRETS_STORE_NAME }} \
             --set agent-api.externalSecret.remoteRefKey=${{ env.HELM_EXTERNAL_SECRETS_REMOTE_REF_KEY }} \
